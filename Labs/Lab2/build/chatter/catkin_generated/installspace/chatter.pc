@@ -1,0 +1,8 @@
+prefix=/home/jun/Documents/EECS206A/Labs/Lab2/install
+
+Name: chatter
+Description: Description of chatter
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/jun/Documents/EECS206A/Labs/Lab2/install/lib 
+Requires: 
