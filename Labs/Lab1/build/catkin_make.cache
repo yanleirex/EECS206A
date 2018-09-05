@@ -1,2 +1,0 @@
-foo:lab0_turtlesim
--DCATKIN_DEVEL_PREFIX=/home/jun/Documents/EECS206A/Labs/Lab1/devel -DCMAKE_INSTALL_PREFIX=/home/jun/Documents/EECS206A/Labs/Lab1/install -G Unix Makefiles

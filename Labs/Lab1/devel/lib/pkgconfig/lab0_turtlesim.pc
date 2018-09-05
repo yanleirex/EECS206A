@@ -1,8 +1,0 @@
-prefix=/home/jun/Documents/EECS206A/Labs/Lab1/devel
-
-Name: lab0_turtlesim
-Description: Description of lab0_turtlesim
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/jun/Documents/EECS206A/Labs/Lab1/devel/lib 
-Requires: 
