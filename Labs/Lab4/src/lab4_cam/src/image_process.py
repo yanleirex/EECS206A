@@ -108,40 +108,60 @@ if __name__ == '__main__':
       # the image
       nx = 4
       ny = 3
-
-      normalized = np.subtract(points, points[0])
-      a = np.vstack(normalized)
-      b = np.zeros((4,2))
-
-      one_zero = np.ravel(np.column_stack((np.ones((4,)),np.zeros((4,))))).reshape((8,1))
-      left_two_columns = np.ravel(np.column_stack((a,b))).reshape((8,2))
-
-      right_two_columns = np.ravel(np.column_stack((b,a))).reshape((8,2))
-      zero_one = np.ravel(np.column_stack((np.zeros((4,)),np.ones((4,))))).reshape((8,1))
-
-      left_block = np.hstack((left_two_columns, one_zero, right_two_columns, zero_one))
-
-      nuv = -uv
-      nuv = uv.T
-
-      uvxy_1 = np.multiply(nuv, a)
-      uvxy_2 = np.multiply(np.fliplr(nuv), a)
-
-      left_a = uvxy_1[:,0]
-      left_b = uvxy_2[:,0]
-
-      right_a = uvxy_1[:,1]
-      right_b = uvxy_2[:,1]
-
-      left_uvxy = np.ravel(np.column_stack((left_a,left_b))).reshape((8,1))
-      right_uvxy = np.ravel(np.column_stack((right_a,right_b))).reshape((8,1))
-
-
-      A = np.hstack((left_block, left_uvxy, right_uvxy))
-      b = np.vstack((uv[:,0].reshape((1,2)), uv[:,1].reshape((1,2)), uv[:,2].reshape((1,2)), uv[:,3].reshape((1,2))))
-      x = np.linalg.solve
-      
       H = np.eye(3)
+      x1 = 0 
+      x2 = 0 
+      x3 = 30.48 
+      x4 = 30.48
+      y1 = 0 
+      y2 = 30.48 
+      y3 = 30.48 
+      y4 = 0
+      A = np.matrix([[x1,y1,1,0,0,0,-uv[0,0]*x1,-uv[0,0]*y1],
+                    [0,0,0,x1,y1,1,-uv[1,0]*x1,-uv[1,0]*y1],
+                    [x2,y2,1,0,0,0,-uv[0,1]*x2,-uv[0,1]*y2],
+                    [0,0,0,x2,y2,1,-uv[1,1]*x2,-uv[1,1]*y2],
+                    [x3,y3,1,0,0,0,-uv[0,2]*x3,-uv[0,2]*y3],
+                    [0,0,0,x3,y3,1,-uv[1,2]*x3,-uv[1,2]*y3],
+                    [x4,y4,1,0,0,0,-uv[0,3]*x4,-uv[0,3]*y4],
+                    [0,0,0,x4,y4,1,-uv[1,3]*x4,-uv[1,3]*y4]])
+      print('Matrix A\n')
+      print(A)
+      b = np.matrix([[uv[0,0]],[uv[1,0]],[uv[0,1]],[uv[1,1]],[uv[0,2]],[uv[1,2]],[uv[0,3]],[uv[1,3]]])
+      print('Matrix b\n')
+      print(b)
+      x = np.linalg.solve(A,b)
+      print(x)
+      H = np.matrix([[x[0],x[1],x[2]],[x[3],x[4],x[5]],[x[6],x[7],1]])
+      print('Matrix H\n')  
+      print(H)
+
+      Q = np.linalg.inv(H)
+      print('Mapping pixels to floor coordinates, Please click other two points on the grounds')
+
+      cv2.setMouseCallback("CV Image", on_mouse_click, param=1)
+      points = []
+      while len(points) < 2:
+        if rospy.is_shutdown():
+          raise KeyboardInterrupt
+        cv2.waitKey(10)
+
+      u1 = points[0,0] 
+      v1 = points[0,1]
+      u2 = points[1,0]
+      v2 = points[1,1]
+
+      x1 = (Q[0,0]*u1+Q[0,1]*v1+Q[0,2])/(Q[2,0]*u1+Q[2,1]*v1+Q[2,2])
+      y1 = (Q[1,0]*u1+Q[1,1]*v1+Q[1,2])/(Q[2,0]*u1+Q[2,1]*v1+Q[2,2])
+      x2 = (Q[0,0]*u2+Q[0,1]*v2+Q[0,2])/(Q[2,0]*u2+Q[2,1]*v2+Q[2,2])
+      y2 = (Q[1,0]*u2+Q[1,1]*v2+Q[1,2])/(Q[2,0]*u2+Q[2,1]*v2+Q[2,2])
+
+      print('Calculated distance')
+      print(sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)))
+
+
+
+
 
 # ==============================================================================
       
