@@ -6,7 +6,7 @@ import cv2, time, sys
 from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
 from numpy.linalg import *
-
+import math
 
 # Nominal length of a tile side
 TILE_LENGTH = 30.48 #cm
@@ -117,7 +117,7 @@ if __name__ == '__main__':
       y2 = 30.48 
       y3 = 30.48 
       y4 = 0
-      A = np.matrix([[x1,y1,1,0,0,0,-uv[0,0]*x1,-uv[0,0]*y1],
+      A = np.array([[x1,y1,1,0,0,0,-uv[0,0]*x1,-uv[0,0]*y1],
                     [0,0,0,x1,y1,1,-uv[1,0]*x1,-uv[1,0]*y1],
                     [x2,y2,1,0,0,0,-uv[0,1]*x2,-uv[0,1]*y2],
                     [0,0,0,x2,y2,1,-uv[1,1]*x2,-uv[1,1]*y2],
@@ -127,12 +127,12 @@ if __name__ == '__main__':
                     [0,0,0,x4,y4,1,-uv[1,3]*x4,-uv[1,3]*y4]])
       print('Matrix A\n')
       print(A)
-      b = np.matrix([[uv[0,0]],[uv[1,0]],[uv[0,1]],[uv[1,1]],[uv[0,2]],[uv[1,2]],[uv[0,3]],[uv[1,3]]])
+      b = np.array([uv[0,0],uv[1,0],uv[0,1],uv[1,1],uv[0,2],uv[1,2],uv[0,3],uv[1,3]]).transpose()
       print('Matrix b\n')
       print(b)
       x = np.linalg.solve(A,b)
       print(x)
-      H = np.matrix([[x[0],x[1],x[2]],[x[3],x[4],x[5]],[x[6],x[7],1]])
+      H = np.array([[x[0],x[1],x[2]],[x[3],x[4],x[5]],[x[6],x[7],1]])
       print('Matrix H\n')  
       print(H)
 
@@ -145,11 +145,12 @@ if __name__ == '__main__':
         if rospy.is_shutdown():
           raise KeyboardInterrupt
         cv2.waitKey(10)
+      uv = np.array(points)
 
-      u1 = points[0,0] 
-      v1 = points[0,1]
-      u2 = points[1,0]
-      v2 = points[1,1]
+      u1 = uv[0,0] 
+      v1 = uv[0,1]
+      u2 = uv[1,0]
+      v2 = uv[1,1]
 
       x1 = (Q[0,0]*u1+Q[0,1]*v1+Q[0,2])/(Q[2,0]*u1+Q[2,1]*v1+Q[2,2])
       y1 = (Q[1,0]*u1+Q[1,1]*v1+Q[1,2])/(Q[2,0]*u1+Q[2,1]*v1+Q[2,2])
@@ -157,7 +158,7 @@ if __name__ == '__main__':
       y2 = (Q[1,0]*u2+Q[1,1]*v2+Q[1,2])/(Q[2,0]*u2+Q[2,1]*v2+Q[2,2])
 
       print('Calculated distance')
-      print(sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)))
+      print(math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)))
 
 
 
