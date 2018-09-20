@@ -53,44 +53,59 @@ def map_keyboard():
         joint_command = {joint_name: current_position + delta}
         limb.set_joint_positions(joint_command)
 
-    bindings = {
-    #   key: (function, args, description)
-        '9': (set_j, [left, lj[0], 0.1], "left_s0 increase"),
-        '6': (set_j, [left, lj[0], -0.1], "left_s0 decrease"),
-        '8': (set_j, [left, lj[1], 0.1], "left_s1 increase"),
-        '7': (set_j, [left, lj[1], -0.1], "left_s1 decrease"),
-        'o': (set_j, [left, lj[2], 0.1], "left_e0 increase"),
-        'y': (set_j, [left, lj[2], -0.1], "left_e0 decrease"),
-        'i': (set_j, [left, lj[3], 0.1], "left_e1 increase"),
-        'u': (set_j, [left, lj[3], -0.1], "left_e1 decrease"),
-        'l': (set_j, [left, lj[4], 0.1], "left_w0 increase"),
-        'h': (set_j, [left, lj[4], -0.1], "left_w0 decrease"),
-        'k': (set_j, [left, lj[5], 0.1], "left_w1 increase"),
-        'j': (set_j, [left, lj[5], -0.1], "left_w1 decrease"),
-        '.': (set_j, [left, lj[6], 0.1], "left_w2 increase"),
-        'n': (set_j, [left, lj[6], -0.1], "left_w2 decrease"),
-        ',': (grip_left.close, [], "left: gripper close"),
-        'm': (grip_left.open, [], "left: gripper open"),
-        '/': (grip_left.calibrate, [], "left: gripper calibrate"),
+    def set_j_nominal(limb, joint_name, delta):
+        current_position = limb.joint_angle(joint_name)
+        joint_command = {joint_name: delta}
+        limb.set_joint_positions(joint_command)
+    
+    # bindings = {
+    # # #   key: (function, args, description)
+    #     '9': (set_j, [left, lj[0], 0.1], "left_s0 increase"),
+    #     '6': (set_j, [left, lj[0], -0.1], "left_s0 decrease"),
+    #     '8': (set_j, [left, lj[1], 0.1], "left_s1 increase"),
+    #     '7': (set_j, [left, lj[1], -0.1], "left_s1 decrease"),
+    #     'o': (set_j, [left, lj[2], 0.1], "left_e0 increase"),
+    #     'y': (set_j, [left, lj[2], -0.1], "left_e0 decrease"),
+    #     'i': (set_j, [left, lj[3], 0.1], "left_e1 increase"),
+    #     'u': (set_j, [left, lj[3], -0.1], "left_e1 decrease"),
+    #     'l': (set_j, [left, lj[4], 0.1], "left_w0 increase"),
+    #     'h': (set_j, [left, lj[4], -0.1], "left_w0 decrease"),
+    #     'k': (set_j, [left, lj[5], 0.1], "left_w1 increase"),
+    #     'j': (set_j, [left, lj[5], -0.1], "left_w1 decrease"),
+    #     '.': (set_j, [left, lj[6], 0.1], "left_w2 increase"),
+    #     'n': (set_j, [left, lj[6], -0.1], "left_w2 decrease"),
+    #     ',': (grip_left.close, [], "left: gripper close"),
+    #     'm': (grip_left.open, [], "left: gripper open"),
+    #     '/': (grip_left.calibrate, [], "left: gripper calibrate"),
 
-        '4': (set_j, [right, rj[0], 0.1], "right_s0 increase"),
-        '1': (set_j, [right, rj[0], -0.1], "right_s0 decrease"),
-        '3': (set_j, [right, rj[1], 0.1], "right_s1 increase"),
-        '2': (set_j, [right, rj[1], -0.1], "right_s1 decrease"),
-        'r': (set_j, [right, rj[2], 0.1], "right_e0 increase"),
-        'q': (set_j, [right, rj[2], -0.1], "right_e0 decrease"),
-        'e': (set_j, [right, rj[3], 0.1], "right_e1 increase"),
-        'w': (set_j, [right, rj[3], -0.1], "right_e1 decrease"),
-        'f': (set_j, [right, rj[4], 0.1], "right_w0 increase"),
-        'a': (set_j, [right, rj[4], -0.1], "right_w0 decrease"),
-        'd': (set_j, [right, rj[5], 0.1], "right_w1 increase"),
-        's': (set_j, [right, rj[5], -0.1], "right_w1 decrease"),
-        'v': (set_j, [right, rj[6], 0.1], "right_w2 increase"),
-        'z': (set_j, [right, rj[6], -0.1], "right_w2 decrease"),
-        'c': (grip_right.close, [], "right: gripper close"),
-        'x': (grip_right.open, [], "right: gripper open"),
-        'b': (grip_right.calibrate, [], "right: gripper calibrate"),
-     }
+    #     '4': (set_j, [right, rj[0], 0.1], "right_s0 increase"),
+    #     '1': (set_j, [right, rj[0], -0.1], "right_s0 decrease"),
+    #     '3': (set_j, [right, rj[1], 0.1], "right_s1 increase"),
+    #     '2': (set_j, [right, rj[1], -0.1], "right_s1 decrease"),
+    #     'r': (set_j, [right, rj[2], 0.1], "right_e0 increase"),
+    #     'q': (set_j, [right, rj[2], -0.1], "right_e0 decrease"),
+    #     'e': (set_j, [right, rj[3], 0.1], "right_e1 increase"),
+    #     'w': (set_j, [right, rj[3], -0.1], "right_e1 decrease"),
+    #     'f': (set_j, [right, rj[4], 0.1], "right_w0 increase"),
+    #     'a': (set_j, [right, rj[4], -0.1], "right_w0 decrease"),
+    #     'd': (set_j, [right, rj[5], 0.1], "right_w1 increase"),
+    #     's': (set_j, [right, rj[5], -0.1], "right_w1 decrease"),
+    #     'v': (set_j, [right, rj[6], 0.1], "right_w2 increase"),
+    #     'z': (set_j, [right, rj[6], -0.1], "right_w2 decrease"),
+    #     'c': (grip_right.close, [], "right: gripper close"),
+    #     'x': (grip_right.open, [], "right: gripper open"),
+    #     'b': (grip_right.calibrate, [], "right: gripper calibrate")
+    # }
+    bindings = {
+    # #   key: (function, args, description)
+        '9': (set_j_nominal, [left, lj[0], float(raw_input('Type the angle(radians)'))], "left_s0 modification"),
+        '8': (set_j_nominal, [left, lj[1], float(raw_input('Type the angle(radians)'))], "left_s1 modification"),
+        'o': (set_j_nominal, [left, lj[2], float(raw_input('Type the angle(radians)'))], "left_e0 modification"),
+        'i': (set_j_nominal, [left, lj[3], float(raw_input('Type the angle(radians)'))], "left_e1 modification"),
+        'l': (set_j_nominal, [left, lj[4], float(raw_input('Type the angle(radians)'))], "left_w0 modification"),
+        'k': (set_j_nominal, [left, lj[5], float(raw_input('Type the angle(radians)'))], "left_w1 modification"),
+        '.': (set_j_nominal, [left, lj[6], float(raw_input('Type the angle(radians)'))], "left_w2 modification"),
+    }
     done = False
     print("Controlling joints. Press ? for help, Esc to quit.")
     while not done and not rospy.is_shutdown():
