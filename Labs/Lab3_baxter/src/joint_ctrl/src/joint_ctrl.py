@@ -53,10 +53,6 @@ def map_keyboard():
         joint_command = {joint_name: current_position + delta}
         limb.set_joint_positions(joint_command)
 
-    def set_j_nominal(limb, joint_name, delta):
-        current_position = limb.joint_angle(joint_name)
-        joint_command = {joint_name: delta}
-        limb.set_joint_positions(joint_command)
     
     # bindings = {
     # # #   key: (function, args, description)
@@ -96,37 +92,39 @@ def map_keyboard():
     #     'x': (grip_right.open, [], "right: gripper open"),
     #     'b': (grip_right.calibrate, [], "right: gripper calibrate")
     # }
+    # bindings = {
+    # # #   key: (function, args, description)
+    #     '9': (set_j_nominal, [left, lj[0], float(raw_input('Type the angle(radians)'))], "left_s0 modification"),
+    #     '8': (set_j_nominal, [left, lj[1], float(raw_input('Type the angle(radians)'))], "left_s1 modification"),
+    #     'o': (set_j_nominal, [left, lj[2], float(raw_input('Type the angle(radians)'))], "left_e0 modification"),
+    #     'i': (set_j_nominal, [left, lj[3], float(raw_input('Type the angle(radians)'))], "left_e1 modification"),
+    #     'l': (set_j_nominal, [left, lj[4], float(raw_input('Type the angle(radians)'))], "left_w0 modification"),
+    #     'k': (set_j_nominal, [left, lj[5], float(raw_input('Type the angle(radians)'))], "left_w1 modification"),
+    #     '.': (set_j_nominal, [left, lj[6], float(raw_input('Type the angle(radians)'))], "left_w2 modification"),
+    # }
     bindings = {
-    # #   key: (function, args, description)
-        '9': (set_j_nominal, [left, lj[0], float(raw_input('Type the angle(radians)'))], "left_s0 modification"),
-        '8': (set_j_nominal, [left, lj[1], float(raw_input('Type the angle(radians)'))], "left_s1 modification"),
-        'o': (set_j_nominal, [left, lj[2], float(raw_input('Type the angle(radians)'))], "left_e0 modification"),
-        'i': (set_j_nominal, [left, lj[3], float(raw_input('Type the angle(radians)'))], "left_e1 modification"),
-        'l': (set_j_nominal, [left, lj[4], float(raw_input('Type the angle(radians)'))], "left_w0 modification"),
-        'k': (set_j_nominal, [left, lj[5], float(raw_input('Type the angle(radians)'))], "left_w1 modification"),
-        '.': (set_j_nominal, [left, lj[6], float(raw_input('Type the angle(radians)'))], "left_w2 modification"),
+    'left_s0': float(raw_input("Type the angle")),
+    'left_s1': float(raw_input("Type the angle")),
+    'left_e0': float(raw_input("Type the angle")),
+    'left_e1': float(raw_input("Type the angle")),
+    'left_w0': float(raw_input("Type the angle")),
+    'left_w1': float(raw_input("Type the angle")),
+    'left_w2': float(raw_input("Type the angle"))
     }
     done = False
     print("Controlling joints. Press ? for help, Esc to quit.")
     while not done and not rospy.is_shutdown():
-        c = baxter_external_devices.getch()
-        if c:
-            #catch Esc or ctrl-c
-            if c in ['\x1b', '\x03']:
-                done = True
-                rospy.signal_shutdown("Example finished.")
-            elif c in bindings:
-                cmd = bindings[c]
-                #expand binding to something like "set_j(right, 's0', 0.1)"
-                cmd[0](*cmd[1])
-                print("command: %s" % (cmd[2],))
-            else:
-                print("key bindings: ")
-                print("  Esc: Quit")
-                print("  ?: Help")
-                for key, val in sorted(bindings.items(),
-                                       key=lambda x: x[1][2]):
-                    print("  %s: %s" % (key, val[2]))
+    	try:
+    		left.set_joint_positions(bindings)    
+    	except KeyboardInterrupe:
+    		print("escape")
+	    # else:
+	    #     print("key bindings: ")
+	    #     print("  Esc: Quit")
+	    #     print("  ?: Help")
+	    #     for key, val in sorted(bindings.items(),
+	    #                            key=lambda x: x[1][2]):
+	    #         print("  %s: %s" % (key, val[2]))
 
 
 def main():
